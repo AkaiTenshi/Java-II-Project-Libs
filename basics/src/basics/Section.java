@@ -1,14 +1,56 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package basics;
 
-/**
- *
- * @author Chris
- */
+import org.json.JSONObject;
+
 public class Section {
+    private Journey journey;
+    private String walk;
+    private Checkpoint departure, arrival;
     
+    
+    public Section(JSONObject json){
+        walk = json.get("walk").toString();
+        
+        JSONObject depObj = json.getJSONObject("departure");
+        departure = new Checkpoint(depObj);
+        JSONObject arrObj = json.getJSONObject("arrival");
+        arrival = new Checkpoint(arrObj);
+        
+        JSONObject jourObj = json.getJSONObject("journey");
+        journey = new Journey(jourObj);
+        
+    }
+
+    public Journey getJourney() {
+        return journey;
+    }
+
+    public void setJourney(Journey journey) {
+        this.journey = journey;
+    }
+
+    public String getWalk() {
+        return walk;
+    }
+
+    public void setWalk(String walk) {
+        this.walk = walk;
+    }
+
+    public Checkpoint getDeparture() {
+        return departure;
+    }
+
+    public void setDeparture(Checkpoint departure) {
+        this.departure = departure;
+    }
+
+    public Checkpoint getArrival() {
+        return arrival;
+    }
+
+    public void setArrival(Checkpoint arrival) {
+        this.arrival = arrival;
+    }
+
 }
