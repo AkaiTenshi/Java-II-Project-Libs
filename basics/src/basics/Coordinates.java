@@ -1,3 +1,6 @@
+/*
+ Basic Coordinate class doesn't do much
+ */
 package basics;
 
 public class Coordinates {
@@ -6,12 +9,14 @@ public class Coordinates {
     private double x;
     private double y;
 
+    // Consrtuctor
     public Coordinates() {
         this.x = 0;
         this.y = 0;
         this.type = "";
     }
 
+    // Getters & Setters
     public String getType() {
         return type;
     }

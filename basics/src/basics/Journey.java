@@ -1,3 +1,6 @@
+/*
+Holds the Journey object's parsing
+*/
 package basics;
 
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ public class Journey {
     private ArrayList<Checkpoint> passList = new ArrayList<>();
     
     public Journey(JSONObject json){
+        // Parsing
         name = json.getString("name");
         category = json.getString("category");
         name = json.getString("operator");
@@ -21,7 +25,6 @@ public class Journey {
         categoryCode = json.get("categoryCode").toString();
         
         JSONArray plArr = json.getJSONArray("passList");
-        int i = 0;
         Iterator plIt = plArr.iterator();
         while(plIt.hasNext()){
             JSONObject innerObj = (JSONObject) plIt.next();
@@ -29,6 +32,7 @@ public class Journey {
         }
     }
 
+    // Getter & Setter
     public String getName() {
         return name;
     }

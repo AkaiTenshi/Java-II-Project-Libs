@@ -1,3 +1,7 @@
+/*
+This class handles the parsing of the connection 
+objects in the query. 
+*/
 package basics;
 
 import java.io.IOException;
@@ -14,58 +18,41 @@ public class Connection {
     private ArrayList<String> products = new ArrayList<>();
     private String capacity1st, capacity2nd, duration;
     private ArrayList<Section> sections = new ArrayList<>();
-    private Iterator connectionIt;
-    private ArrayList<Connection> connectionArray = new ArrayList<>();
 
-    public Connection(int fromID, int toID) throws IOException, JSONException {
-        JSONObject json = RequestAPI.readJsonFromUrl("http://transport.opendata.ch/v1/connections?from=" + fromID + "&to=" + toID + "&direct=1");
-        JSONArray connections = json.getJSONArray("connections");
+    //Constructor 
+    public Connection(JSONObject json) throws IOException, JSONException {
 
-        connectionIt = connections.iterator();
-        while (connectionIt.hasNext()) {
-            JSONObject connectionObj = (JSONObject) connectionIt.next();
+        // Parsing
+        JSONObject fromObj = json.getJSONObject("from");
+        fromPoint = new Checkpoint(fromObj);
+        JSONObject toObj = json.getJSONObject("to");
+        toPoint = new Checkpoint(toObj);
 
-            JSONObject fromObj = connectionObj.getJSONObject("from");
-            fromPoint = new Checkpoint(fromObj);
-            JSONObject toObj = connectionObj.getJSONObject("to");
-            toPoint = new Checkpoint(toObj);
+        duration = json.getString("duration");
 
-            duration = connectionObj.getString("duration");
+        JSONObject serviceObj = json.getJSONObject("service");
+        service = new Service(serviceObj);
 
-            JSONObject serviceObj = connectionObj.getJSONObject("service");
-            service = new Service(serviceObj);
+        JSONArray productsArr = json.getJSONArray("products");
 
-            JSONArray productsArr = connectionObj.getJSONArray("products");
-            
-            for (int i = 0; i < productsArr.length(); i++) {
-                products.add(productsArr.get(i).toString());
-            }
+        products = new ArrayList<>();
+        for (int i = 0; i < productsArr.length(); i++) {
+            products.add(productsArr.get(i).toString());
+        }
 
-            capacity1st = connectionObj.get("capacity1st").toString();
-            capacity2nd = connectionObj.get("capacity2nd").toString();
+        capacity1st = json.get("capacity1st").toString();
+        capacity2nd = json.get("capacity2nd").toString();
 
-            JSONArray sectionsArr = connectionObj.getJSONArray("sections");
-            Iterator sectionsIt = sectionsArr.iterator();
-            while (sectionsIt.hasNext()) {
-                JSONObject sectionObj = (JSONObject) sectionsIt.next();
-                sections.add(new Section(sectionObj));
-            }
-
-            connectionArray.add(new Connection(getToPoint(), getFromPoint(), getDuration(), getService(), getProducts(), getCapacity1st(), getCapacity2nd(), getSections()));
+        JSONArray sectionsArr = json.getJSONArray("sections");
+        Iterator sectionsIt = sectionsArr.iterator();
+        sections = new ArrayList<>();
+        while (sectionsIt.hasNext()) {
+            JSONObject sectionObj = (JSONObject) sectionsIt.next();
+            sections.add(new Section(sectionObj));
         }
     }
 
-    private Connection(Checkpoint _toPoint, Checkpoint _fromPoint, String _duration, Service _service, ArrayList<String> _products, String _capacity1st, String _capacity2nd, ArrayList<Section> _sections) {
-        this.capacity1st = _capacity1st;
-        this.capacity2nd = _capacity2nd;
-        this.duration = _duration;
-        this.fromPoint = _fromPoint;
-        this.toPoint = _toPoint;
-        this.products = _products;
-        this.sections = _sections;
-        this.service = _service;
-    }
-
+    // Getters & Setters
     public Checkpoint getToPoint() {
         return toPoint;
     }
@@ -129,13 +116,4 @@ public class Connection {
     public void setSections(ArrayList<Section> sections) {
         this.sections = sections;
     }
-
-    public ArrayList<Connection> getConnectionArray() {
-        return connectionArray;
-    }
-
-    public void setConnectionArray(ArrayList<Connection> connectionArray) {
-        this.connectionArray = connectionArray;
-    }
-
 }

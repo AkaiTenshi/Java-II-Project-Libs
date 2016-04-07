@@ -1,3 +1,6 @@
+/*
+This is a collection of methods used to pull info from the internet
+*/
 package basics;
 
 import java.io.BufferedReader;
@@ -16,26 +19,29 @@ public class RequestAPI {
 
     static Document doc;
 
+    // Jsoup HTML getter for wiki, throws IOEx
     public static Document getHTML(String url) throws IOException {
         doc = Jsoup.connect(url).get();
         return doc;
     }
 
+    //String builder to read from InputStream, throws IOEx
     private static String readAll(Reader reader) throws IOException {
         StringBuilder builder = new StringBuilder();
         int cp;
+        //While the stream is not empty
         while ((cp = reader.read()) != -1) {
             builder.append((char) cp);
         }
         return builder.toString();
     }
 
+    // Json input stream from URL, throws IO and JSON Ex
     public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-        try (InputStream input = new URL(url).openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input, Charset.forName("UTF-8")));
-            String jsonText = readAll(reader);
-            JSONObject json = new JSONObject(jsonText);
-            return json;
-        }
+        InputStream input = new URL(url).openStream(); // Open the stream to the URL and read from it
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input, Charset.forName("UTF-8")));
+        String jsonText = readAll(reader); // Convert the buffer to a string
+        JSONObject json = new JSONObject(jsonText); // And then to json
+        return json;
     }
 }

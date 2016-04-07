@@ -1,3 +1,9 @@
+/*
+Location class describes the Location Object of the API
+while also having the functionallity of the API's /location
+query.
+*/
+
 package basics;
 
 import java.io.IOException;
@@ -15,10 +21,12 @@ public class Location {
 
     //Used to get data from Location query to the API
     public Location(String _Name) throws IOException, JSONException {
-        json = RequestAPI.readJsonFromUrl("http://transport.opendata.ch/v1/locations?query=" + _Name);
-
+        json = RequestAPI.readJsonFromUrl("http://transport.opendata.ch/v1/locations?query=" + _Name); // Pull JSON from the URL
+        
+        //Parsing
         JSONArray station = json.getJSONArray("stations");
-        JSONObject innerObj = station.getJSONObject(0);
+        JSONObject innerObj = station.getJSONObject(0); // We need only the first result (Highest score)
+        
         id = innerObj.getInt("id");
         name = innerObj.getString("name");
 
@@ -30,6 +38,7 @@ public class Location {
 
     //Used to parse data send from other queries to the API
     public Location(JSONObject json) {
+        //Parsing
         id = json.getInt("id");
         name = json.getString("name");
 
@@ -38,7 +47,8 @@ public class Location {
         coord.setX(coordinates.getDouble("x"));
         coord.setY(coordinates.getDouble("y"));
     }
-
+    
+    //Getters & Setters
     public int getId() {
         return id;
     }

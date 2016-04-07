@@ -1,3 +1,6 @@
+/*
+Holds the Service object's parsing
+*/
 package basics;
 
 import org.json.JSONObject;
@@ -9,6 +12,7 @@ public class Section {
     
     
     public Section(JSONObject json){
+        // Parsing
         walk = json.get("walk").toString();
         
         JSONObject depObj = json.getJSONObject("departure");
@@ -21,6 +25,7 @@ public class Section {
         
     }
 
+    // Getter & Setter
     public Journey getJourney() {
         return journey;
     }

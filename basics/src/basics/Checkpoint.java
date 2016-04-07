@@ -1,24 +1,30 @@
+/*
+ Holds the ckeckpoint object's parsing
+ */
 package basics;
 
 import org.json.JSONObject;
 
 public class Checkpoint {
+
     private Location station;
     private String arrival, departure, platform;
     private Prognosis prognosis;
-    
-    public Checkpoint(JSONObject json){
+
+    public Checkpoint(JSONObject json) {
+        // Parsing
         JSONObject stationObj = json.getJSONObject("station");
         station = new Location(stationObj);
         arrival = json.get("arrival").toString();
         departure = json.get("departure").toString();
         platform = json.get("platform").toString();
-        
+
         JSONObject prognosisObj = json.getJSONObject("prognosis");
         prognosis = new Prognosis(prognosisObj);
-        
+
     }
 
+    //Getters & Setters
     public Location getStation() {
         return station;
     }

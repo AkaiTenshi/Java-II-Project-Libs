@@ -1,3 +1,6 @@
+/*
+Holds the Prognosis object's parsing
+*/
 package basics;
 
 import org.json.JSONObject;
@@ -7,6 +10,7 @@ public class Prognosis {
     private String capacity1st, capacity2nd, platform, depTime, arrTime;
 
     public Prognosis(JSONObject json) {
+        // Parsing
         capacity1st = json.get("capacity1st").toString();
         capacity2nd = json.get("capacity2nd").toString();
         platform = json.get("platform").toString();
@@ -15,6 +19,7 @@ public class Prognosis {
         arrTime = json.get("arrival").toString();
     }
 
+    // Getter & Setter
     public String getCapacity1st() {
         return capacity1st;
     }

@@ -1,14 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This object was not found to be used anywhere 
+ * in the API so it is not implemented. Maybe we
+ * will need it on a future step.
  */
 package basics;
 
-/**
- *
- * @author Chris
- */
 public class Stop {
     
 }
