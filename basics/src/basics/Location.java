@@ -48,6 +48,16 @@ public class Location {
         coord.setY(coordinates.getDouble("y"));
     }
     
+    //Used to get data from DB or Files.
+    public Location(int id, String name, double cordX, double cordY, String type){
+        this.coord = new Coordinates();
+        coord.setX(cordX);
+        coord.setY(cordY);
+        this.name = name;
+        this.id = id;
+        this.type = type;
+    }
+    
     //Getters & Setters
     public int getId() {
         return id;
