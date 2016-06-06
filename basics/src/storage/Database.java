@@ -1,7 +1,6 @@
 /*
-    All database actions are handled here.
-*/
-
+ All database actions are handled here.
+ */
 package storage;
 
 import basics.DirectLink;
@@ -11,57 +10,65 @@ import java.util.ArrayList;
 
 public class Database {
 
+    private static final String SQL_INSERT_CITIES = "INSERT INTO CITIES"
+            + " VALUES(?, ?, ?, ?, ?)";
+
+    private static final String SQL_INSERT_CONNECTIONS = "INSERT INTO CONNECTIONS"
+            + " VALUES(?, ?, ?)";
+
     //Connection to DB
     public static Connection Connect() throws SQLException, ClassNotFoundException {
         Class.forName("oracle.jdbc.driver.OracleDriver"); //Register the Driver
-        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@//10.10.51.123:1521/orcl", "it21456", "K$n6931323220"); //Connect to the DB
+        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@//10.10.51.123:1521/orcl:1521", "it21456", "JavaTest"); //Connect to the DB
         return con;
     }
 
-    
     public static void writeCitiesToDB(ArrayList<Location> cities) throws SQLException, DBHasDataException, ClassNotFoundException {
         Connection con = Connect();
-        Statement stmn = con.createStatement();
+        con.setAutoCommit(false);
+        PreparedStatement stmn = con.prepareStatement(SQL_INSERT_CITIES);
         // Check if the DB is empty and throw Exception
         ResultSet rs = stmn.executeQuery("select * from cities");
-        if(rs.next()){
+
+        if (rs.next()) {
             throw new DBHasDataException("Database is not empty.");
         }
-        
+
         // Instert all the values from cities array to the DB
         for (int i = 0; i <= cities.size() - 1; i++) {
-            String sql = "INSERT INTO cities "
-                    + "VALUES (" + cities.get(i).getId()
-                    + ", '" + cities.get(i).getName()
-                    + "', " + cities.get(i).getCoord().getX()
-                    + ", " + cities.get(i).getCoord().getY()
-                    + ", '" + cities.get(i).getType() + "')";
-            stmn.executeUpdate(sql);
+            stmn.setInt(1, cities.get(i).getId());
+            stmn.setString(2, cities.get(i).getName());
+            stmn.setDouble(3, cities.get(i).getCoord().getX());
+            stmn.setDouble(4, cities.get(i).getCoord().getY());
+            stmn.setString(5, cities.get(i).getType());
+            stmn.executeUpdate();
         }
+        con.commit();
         con.close();
     }
 
     public static void writeConnectionsToDB(ArrayList<DirectLink> links) throws SQLException, DBHasDataException, ClassNotFoundException {
         Connection con = Connect();
-        Statement stmn = con.createStatement();
+        con.setAutoCommit(false);
+        PreparedStatement stmn = con.prepareStatement(SQL_INSERT_CONNECTIONS);
         // Check if DB is empty
         ResultSet rs = stmn.executeQuery("select * from links");
-        if(rs.next()){
+        if (rs.next()) {
             throw new DBHasDataException("Database is not empty.");
         }
-        
+
         // Insert all of the links array values to the DB
         for (int i = 0; i <= links.size() - 1; i++) {
-            String sql = "INSERT INTO links "
-                    + "VALUES ('" + links.get(i).getFrom()
-                    + "', '" + links.get(i).getTo()
-                    + "', '" + links.get(i).getType() + "')";
-            stmn.executeUpdate(sql);
+            stmn.setString(1, links.get(i).getFrom());
+            stmn.setString(2, links.get(i).getTo());
+            stmn.setString(3, links.get(i).getType());
+            stmn.executeUpdate();
         }
+        con.commit();
         con.close();
     }
 
-    public static ArrayList<Location> readCitiesFromDB() throws SQLException, ClassNotFoundException  {
+    public static ArrayList<Location> readCitiesFromDB() throws SQLException, ClassNotFoundException {
         ArrayList<Location> citiesFromDB = new ArrayList<>();
 
         Connection con = Connect();
@@ -80,7 +87,7 @@ public class Database {
         return citiesFromDB;
     }
 
-    public static ArrayList<DirectLink> readConnectionsFromDB() throws SQLException, ClassNotFoundException  {
+    public static ArrayList<DirectLink> readConnectionsFromDB() throws SQLException, ClassNotFoundException {
         ArrayList<DirectLink> linksFromDB = new ArrayList<>();
 
         Connection con = Connect();
@@ -97,7 +104,7 @@ public class Database {
         return linksFromDB;
     }
 
-    public static void resetDatabase() throws SQLException, ClassNotFoundException  {
+    public static void resetDatabase() throws SQLException, ClassNotFoundException {
         Connection con = Connect();
         Statement stmn = con.createStatement();
         // Delete the contents of the whole DB
